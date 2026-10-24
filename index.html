@@ -13,6 +13,8 @@
     
     <!-- Inline page layout overrides to keep index clean -->
     <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
         /* --- Premium Hero & Grid Typography Formatting Layouts --- */
         .hero-section {
             max-width: 1200px;
@@ -24,7 +26,7 @@
         .gradient-text {
             font-size: 56px;
             font-weight: 800;
-            letter-spacing: -1.5px;
+            letter-spacing: 0;
             margin-bottom: 20px;
             background: var(--accent-glow);
             -webkit-background-clip: text;
@@ -173,7 +175,7 @@
     <section class="hero-section">
         <h1 class="gradient-text">Take Control of Your Money.<br>One Expense at a Time.</h1>
         <p class="hero-subtitle">
-            Track spending, sync your history across devices with an account, set budget limits, import bank statements, parse SMS alerts manually, and convert currencies.
+            Track expenses, review detailed spending reports, set budgets, import and back up statements, and sync your account across devices.
         </p>
         
         <div class="cta-container">
@@ -194,32 +196,38 @@
 
         <div class="feature-box feature-card" style="margin: 0; background: var(--card-bg);">
             <div class="icon-box">📂</div>
-            <h3>CSV Statement Import</h3>
-            <p>Import a CSV bank statement to add multiple expenses at once. Review the imported entries in your expense history.</p>
+            <h3>CSV Import and Backup</h3>
+            <p>Import common bank CSV formats, including quoted descriptions with commas. Review the import summary, skip duplicates, and export your expense history as a backup.</p>
         </div>
 
         <div class="feature-card">
             <div class="icon-box">💱</div>
-            <h3>Currency Converter</h3>
-            <p>Shopping on global stores online? Input spending in USD ($), GBP (£), or EUR (€) and convert them automatically into local Nigerian Naira values.</p>
+            <h3>Location-Based Currency</h3>
+            <p>Choose a supported country at sign-up to set your display currency. Convert amounts between supported currencies using built-in estimated rates.</p>
         </div>
 
         <div class="feature-card">
             <div class="icon-box">🎯</div>
-            <h3>Budget Limits</h3>
-            <p>Set an overall budget and category limits, then review your weekly, monthly, and yearly spending totals.</p>
+            <h3>Budgets That Travel</h3>
+            <p>Set overall and category spending limits. Your budgets and expense history sync to your account so they’re available when you sign in on another device.</p>
         </div>
 
         <div class="feature-card">
             <div class="icon-box">📊</div>
-            <h3>Charts and History</h3>
-            <p>View your saved expenses in a history table and see spending grouped by category in a chart.</p>
+            <h3>Detailed Spending Insights</h3>
+            <p>Filter expenses by date and inspect each transaction. Compare daily, weekly, or monthly totals, or view spending by category or item.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">💬</div>
+            <h3>Spendy Assistant</h3>
+            <p>Ask for a monthly summary, get simple budget suggestions, or log an expense by typing or speaking. Spendy currently uses local rules and is not connected to an AI model; voice depends on browser support.</p>
         </div>
 
         <div class="feature-card">
             <div class="icon-box">☁️</div>
-            <h3>Account Sync Across Devices</h3>
-            <p>Sign in with the same account on another device to access your expense history. This requires the app owner to configure Supabase cloud storage.</p>
+            <h3>Supabase Cloud Database</h3>
+            <p>Supabase Auth and a protected Supabase database store each account's expenses and budget settings, so they can sync across devices. The app owner must configure Supabase before cloud sync works.</p>
         </div>
 
         <div class="feature-card">
