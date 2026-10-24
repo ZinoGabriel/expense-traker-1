@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>🚀 Create Account</h2>
+        <p class="subtitle">Create an account to access your expense history across devices</p>
+        
+        <form id="signupForm">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <label for="country">Country or region</label>
+                <select id="country" required></select>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required minlength="8" autocomplete="new-password" placeholder="Create a password">
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p id="authMessage" class="subtitle" role="status" aria-live="polite"></p>
+        <p class="footer-text">Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="currency-data.js"></script>
+    <script>
+        const countrySelect = document.querySelector('#country');
+        window.SPENDGUARD_REGIONS.forEach(region => {
+            const option = document.createElement('option');
+            option.value = region.code;
+            option.textContent = `${region.country} (${region.currency})`;
+            countrySelect.appendChild(option);
+        });
+
+        document.querySelector('#signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const message = document.querySelector('#authMessage');
+            const button = this.querySelector('button[type="submit"]');
+            const username = document.querySelector('#username').value.trim();
+            const email = document.querySelector('#email').value.trim();
+            const password = document.querySelector('#password').value;
+            const region = window.SPENDGUARD_REGIONS.find(item => item.code === countrySelect.value);
+
+            if (!window.spendGuardSupabase) {
+                message.textContent = 'Sign-up is not connected yet. Add your Supabase project URL and public anon key to supabase-config.js, then reload.';
+                return;
+            }
+
+            button.disabled = true;
+            message.textContent = 'Creating your account...';
+            const { data, error } = await window.spendGuardSupabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { username, country: region.code, currency: region.currency },
+                    emailRedirectTo: new URL('login.html', window.location.href).href
+                }
+            });
+
+            button.disabled = false;
+            if (error) {
+                message.textContent = error.message.toLowerCase().includes('rate limit')
+                    ? 'Supabase temporarily limited confirmation emails. Wait before retrying, check Authentication > Users to see whether this account was created, and configure custom SMTP in Supabase for ongoing sign-ups.'
+                    : error.message;
+                return;
+            }
+
+            if (data.session) {
+                localStorage.removeItem('registeredUser');
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            message.textContent = 'Account created. Check your email to confirm it, then log in.';
+        });
+    </script>
+</body>
+</html>

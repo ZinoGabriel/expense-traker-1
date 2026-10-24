@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendGuard Dashboard</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2c3e50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <style>
+    :root {
+      --bg-primary: #f2f5f3;
+      --bg-secondary: #ffffff;
+      --text-primary: #1b2927;
+      --text-secondary: #71817d;
+      --border-color: #dce5e1;
+      --accent: #138a72;
+      --accent-dark: #0b6655;
+      --sidebar-bg: #18332f;
+      --sidebar-text: #e8f1ed;
+      --card-bg: #ffffff;
+      --shadow: 0 16px 40px rgba(24, 51, 47, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #111a19;
+      --bg-secondary: #1b2725;
+      --text-primary: #eef4f1;
+      --text-secondary: #a7b9b2;
+      --border-color: #324440;
+      --accent: #49c2a4;
+      --accent-dark: #267d6a;
+      --sidebar-bg: #101d1b;
+      --sidebar-text: #e8f1ed;
+      --card-bg: #1b2725;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: linear-gradient(145deg, var(--bg-primary), color-mix(in srgb, var(--bg-primary) 90%, var(--accent) 10%)); color: var(--text-primary); font-family: "DM Sans", "Segoe UI", sans-serif; }
+    .app-shell { min-height: 100vh; }
+    .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 5; display: flex; flex-direction: column; width: 252px; padding: 26px 18px 18px; background: var(--sidebar-bg); color: var(--sidebar-text); }
+    .brand { display: flex; align-items: center; gap: 11px; margin: 0 8px 38px; color: var(--sidebar-text); font-size: 19px; font-weight: 800; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: #d8f17c; color: #18332f; font-size: 20px; }
+    .nav-label { margin: 0 10px 10px; color: #9cb4ac; font-size: 10px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+    .nav { display: grid; gap: 7px; }
+    .nav button { display: flex; align-items: center; gap: 13px; min-height: 46px; padding: 0 13px; border: 0; border-radius: 9px; background: transparent; color: #c5d6d0; text-align: left; font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; transition: background 160ms ease, color 160ms ease; }
+    .nav button:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .nav button.active { background: #d8f17c; color: #18332f; }
+    .nav-icon { width: 22px; text-align: center; font-size: 17px; }
+    .sidebar-bottom { margin-top: auto; }
+    .account-summary { display: flex; align-items: center; gap: 11px; padding: 14px 9px; border-top: 1px solid rgba(255,255,255,.14); }
+    .avatar { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 50%; background: #f0a078; color: #2b2d29; font-weight: 800; }
+    .account-summary strong, .account-summary small { display: block; overflow: hidden; max-width: 155px; text-overflow: ellipsis; white-space: nowrap; }
+    .account-summary strong { font-size: 13px; }
+    .account-summary small { margin-top: 3px; color: #a9bdb5; font-size: 11px; }
+    .workspace { min-height: 100vh; margin-left: 252px; padding: 34px clamp(20px, 4vw, 58px) 52px; }
+    .container { width: 100%; max-width: 1180px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 14px; }
+    .eyebrow { margin: 0 0 6px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+    .header h1 { margin: 0; font-size: 30px; font-weight: 800; }
+    .header-controls { display: flex; align-items: center; gap: 9px; }
+    .theme-toggle, .logout-btn, .icon-btn { min-height: 42px; padding: 0 14px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+    [data-theme="dark"] .theme-toggle { border-color: color-mix(in srgb, var(--accent) 50%, var(--border-color)); background: color-mix(in srgb, var(--bg-secondary) 88%, var(--accent) 12%); color: var(--text-primary); }
+    .theme-toggle:hover, .icon-btn:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--border-color)); background: color-mix(in srgb, var(--bg-secondary) 92%, var(--accent) 8%); transform: translateY(-1px); }
+    .logout-btn { border-color: #e5b9af; background: #fff8f6; color: #a5432c; }
+    .logout-btn:hover { border-color: #c97866; background: #fbe9e4; transform: translateY(-1px); }
+    .icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+    #cloudSyncStatus { min-height: 20px; margin: 0 0 23px; color: var(--text-secondary); font-size: 12px; }
+    .page-title { margin: 0 0 18px; font-size: 19px; }
+    .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 12px; margin: 0 0 24px; }
+    .card { min-width: 0; padding: 18px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--card-bg); box-shadow: var(--shadow); transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+    .card:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--border-color)); box-shadow: 0 18px 42px rgba(24, 51, 47, .12); transform: translateY(-2px); }
+    .card h4 { margin: 0 0 12px; color: var(--text-secondary); font-size: 11px; letter-spacing: 0; text-transform: uppercase; }
+    .card .amount { overflow-wrap: anywhere; font-size: 23px; font-weight: 800; }
+    .feature-box { margin-bottom: 15px; padding: 20px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-secondary); box-shadow: 0 8px 24px rgba(24, 51, 47, .035); transition: border-color 160ms ease, box-shadow 160ms ease; }
+    .feature-box:focus-within { border-color: color-mix(in srgb, var(--accent) 45%, var(--border-color)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent); }
+    .feature-box h3 { margin-top: 0; font-size: 16px; }
+    input, select { width: 100%; min-width: 0; min-height: 44px; margin-bottom: 10px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font: inherit; transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease; }
+    input:focus, select:focus { border-color: var(--accent); outline: 2px solid color-mix(in srgb, var(--accent) 22%, transparent); }
+    label { display: block; margin: 0 0 6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; }
+    .btn { width: 100%; min-height: 44px; padding: 10px 16px; border: 1px solid transparent; border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-weight: 750; cursor: pointer; box-shadow: 0 3px 8px rgba(19, 138, 114, .14); transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+    .btn:hover:not(:disabled) { background: var(--accent-dark); box-shadow: 0 6px 14px rgba(19, 138, 114, .20); transform: translateY(-1px); }
+    .btn:active:not(:disabled), .theme-toggle:active, .logout-btn:active, .icon-btn:active { transform: translateY(0); }
+    .btn:disabled { cursor: wait; opacity: .62; }
+    .btn-secondary { border-color: var(--border-color); background: var(--bg-primary); color: var(--text-primary); box-shadow: none; }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--accent); background: color-mix(in srgb, var(--bg-primary) 90%, var(--accent) 10%); color: var(--text-primary); box-shadow: none; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 36%, transparent); outline-offset: 2px; }
+    input[type="file"] { padding: 6px; }
+    input[type="file"]::file-selector-button { min-height: 32px; margin-right: 10px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--sidebar-bg); color: var(--sidebar-text); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .chart-toolbar { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 12px; align-items: end; margin: 16px 0; }
+    .chart-toolbar label { margin-bottom: 6px; }
+    .chart-surface { position: relative; min-height: 380px; padding: 18px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-secondary); }
+    .chart-surface canvas { max-height: 390px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-align: left; }
+    th { color: var(--text-secondary); font-size: 11px; letter-spacing: 0; text-transform: uppercase; }
+    tbody tr:hover td { background: color-mix(in srgb, var(--accent) 5%, var(--bg-secondary)); }
+    .table-wrap { overflow-x: auto; }
+    .settings-section { padding: 4px 0 20px; border-bottom: 1px solid var(--border-color); }
+    .settings-section:last-child { border-bottom: 0; }
+    .settings-section h3 { margin-bottom: 5px; }
+    .settings-help { margin: 0 0 16px; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
+    .assistant-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .assistant-header h2 { margin: 0 0 6px; font-size: 19px; }
+    .assistant-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .assistant-actions .icon-btn { min-height: 42px; }
+    .assistant-command { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: start; margin-top: 16px; }
+    .assistant-command input { margin: 0; }
+    .assistant-command .btn { width: auto; min-width: 115px; }
+    .assistant-response { min-height: 24px; margin: 14px 0 0; color: var(--text-primary); font-size: 13px; line-height: 1.55; }
+    .assistant-note { margin: 6px 0 0; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+    .spendy-fab { position: fixed; right: 24px; bottom: 24px; z-index: 8; display: grid; place-items: center; width: 54px; height: 54px; padding: 0; border: 2px solid var(--bg-secondary); border-radius: 50%; background: #d8f17c; color: #18332f; box-shadow: 0 8px 22px rgba(12, 35, 31, .25); font-size: 23px; cursor: pointer; touch-action: none; }
+    .spendy-fab:hover { transform: translateY(-2px); }
+    .spendy-chat-panel { position: fixed; right: 24px; bottom: 92px; z-index: 9; display: grid; grid-template-rows: auto minmax(100px, 1fr) auto auto; width: min(370px, calc(100vw - 28px)); height: min(520px, calc(100dvh - 120px)); overflow: hidden; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary); color: var(--text-primary); box-shadow: 0 20px 60px rgba(12, 35, 31, .24); }
+    .spendy-chat-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; border-bottom: 1px solid var(--border-color); background: var(--sidebar-bg); color: var(--sidebar-text); }
+    .spendy-chat-header h2 { margin: 0; font-size: 15px; }
+    .spendy-chat-header p { margin: 3px 0 0; color: #b5c8c0; font-size: 11px; }
+    .spendy-chat-close { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 7px; background: rgba(255,255,255,.12); color: #fff; font-size: 21px; cursor: pointer; }
+    .spendy-chat-messages { display: flex; flex-direction: column; gap: 9px; overflow-y: auto; padding: 14px; }
+    .spendy-chat-message { max-width: 88%; padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+    .spendy-chat-message.assistant { align-self: flex-start; border: 1px solid var(--border-color); background: var(--bg-primary); }
+    .spendy-chat-message.user { align-self: flex-end; background: var(--accent); color: #fff; }
+    .spendy-chat-form { display: grid; grid-template-columns: minmax(0, 1fr) 40px 40px; gap: 7px; padding: 10px 12px; border-top: 1px solid var(--border-color); }
+    .spendy-chat-form input { min-height: 40px; margin: 0; padding: 8px 10px; }
+    .spendy-chat-form button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 7px; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; }
+    .spendy-chat-note { margin: 0; padding: 0 12px 9px; color: var(--text-secondary); font-size: 10px; }
+    .chart-details { margin-top: 20px; }
+    .chart-details h3 { margin: 0 0 10px; font-size: 15px; }
+    .chart-details .table-wrap { max-height: 340px; overflow: auto; }
+    .inline-control { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+    .inline-control input[type="checkbox"] { width: 18px; min-height: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+    .inline-control label { margin: 0; color: var(--text-primary); }
+    .hidden { display: none !important; }
+    .lock-overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(12, 24, 22, .78); backdrop-filter: blur(8px); }
+    .lock-panel { width: min(100%, 390px); padding: 28px; border-radius: 12px; background: var(--bg-secondary); color: var(--text-primary); box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+    .lock-panel h2 { margin: 0 0 8px; }
+    .lock-panel p { color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+    .lock-error { min-height: 18px; color: #b23b2b !important; }
+    @media (max-width: 760px) {
+      .sidebar { inset: auto 0 0; width: 100%; height: 70px; padding: 5px 8px max(5px, env(safe-area-inset-bottom)); }
+      .brand, .nav-label, .sidebar-bottom { display: none; }
+      .nav { display: flex; justify-content: space-around; gap: 4px; height: 100%; margin: 0; }
+      .nav button { flex: 1; flex-direction: column; justify-content: center; gap: 2px; min-height: 0; padding: 5px 3px; font-size: 10px; }
+      .nav-icon { font-size: 18px; }
+      .workspace { margin-left: 0; padding: 22px 15px 92px; }
+      .header { align-items: flex-start; }
+      .header h1 { font-size: 24px; }
+      .header-controls { flex-wrap: wrap; justify-content: flex-end; }
+      .theme-toggle, .logout-btn { min-height: 42px; padding: 0 10px; font-size: 11px; }
+      .analytics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .card { padding: 14px; }
+      .card .amount { font-size: 16px; }
+      .form-grid, .chart-toolbar { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .assistant-command { grid-template-columns: minmax(0, 1fr) auto; }
+      .assistant-command input { grid-column: 1 / -1; }
+      .assistant-command .btn { min-width: 0; }
+      .assistant-header { display: block; }
+      .assistant-actions { margin-top: 12px; }
+      .spendy-fab { right: 14px; bottom: calc(82px + env(safe-area-inset-bottom)); }
+      .spendy-chat-panel { right: 10px; bottom: calc(146px + env(safe-area-inset-bottom)); width: calc(100vw - 20px); height: min(500px, calc(100dvh - 170px - env(safe-area-inset-bottom))); }
+      .chart-surface { min-height: 330px; padding: 10px; }
+    }
+    @media (max-width: 420px) {
+      .header { display: block; }
+      .header-controls { justify-content: flex-start; margin-top: 12px; }
+      .chart-toolbar { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .workspace { animation: enter 360ms ease-out both; }
+      @keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><span class="brand-mark">S</span><span>SpendGuard</span></div>
+      <p class="nav-label">Workspace</p>
+      <nav class="nav">
+        <button id="navHomeBtn" class="active" type="button"><span class="nav-icon">⌂</span><span>Home</span></button>
+        <button id="navChartBtn" type="button"><span class="nav-icon">▥</span><span>Charts</span></button>
+        <button id="navSettingsBtn" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="account-summary">
+          <span id="accountAvatar" class="avatar">S</span>
+          <span><strong id="sidebarUsername">Your account</strong><small id="sidebarCurrency">NGN</small></span>
+        </div>
+      </div>
+    </aside>
+    <main class="workspace">
+      <div class="container">
+    <div class="header">
+      <div><p class="eyebrow">Personal finance</p><h1 id="pageHeading">Your overview</h1></div>
+      <div class="header-controls">
+        <button id="themeToggleBtn" class="theme-toggle" type="button">🌙 Dark Mode</button>
+        <button id="lockNowBtn" class="icon-btn" type="button" title="Lock SpendGuard">🔒 Lock</button>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+    </div>
+
+    <p id="cloudSyncStatus" role="status" aria-live="polite" style="font-size: 12px; margin: 0 0 16px; color: var(--text-secondary);">Connecting to your account...</p>
+
+    <!-- Home Page -->
+    <div id="homePage">
+      <div class="analytics-grid">
+        <div class="card"><h4>This Week</h4><div id="weekSpent" class="amount">₦0.00</div></div>
+        <div class="card"><h4>This Month</h4><div id="totalSpent" class="amount">₦0.00</div></div>
+        <div class="card"><h4>Budget Limit</h4><div id="totalLimit" class="amount">₦0.00</div></div>
+        <div class="card"><h4>This Year</h4><div id="yearSpent" class="amount">₦0.00</div></div>
+        <div class="card"><h4>Over Budget</h4><div id="overBudgetAmount" class="amount">₦0.00</div></div>
+      </div>
+
+      <section class="feature-box" aria-labelledby="spendyTitle">
+        <div class="assistant-header">
+          <div><p class="eyebrow">Your spending companion</p><h2 id="spendyTitle">Hi, I'm Spendy. Nice to meet you.</h2><p class="settings-help">Ask for a spending summary, get a simple budget nudge, or say an expense to log it.</p></div>
+          <div class="assistant-actions">
+            <button id="spendyGreetingBtn" class="icon-btn" type="button" title="Hear Spendy's greeting">▶ Hear greeting</button>
+            <button id="spendyReportBtn" class="icon-btn" type="button" title="Summarize this month's spending">▤ Spending report</button>
+          </div>
+        </div>
+        <div class="assistant-command">
+          <input id="spendyCommand" type="text" autocomplete="off" placeholder="Try: Food 200 dollars">
+          <button id="spendyLogBtn" class="btn" type="button">Log expense</button>
+          <button id="spendyMicBtn" class="icon-btn" type="button" title="Speak an expense">🎙 Speak</button>
+        </div>
+        <p id="spendyResponse" class="assistant-response" role="status" aria-live="polite">Your monthly summary and spending tips will appear here.</p>
+        <p class="assistant-note">Spendy uses on-device rules, not a cloud AI model. Voice input needs browser speech recognition and microphone permission; transcription may be handled by your browser provider.</p>
+      </section>
+
+      <div class="feature-box">
+        <h3>SMS Expense Parser</h3>
+        <p style="color: #27ae60; font-weight: bold; margin: 10px 0;">Paste a bank notification SMS below to add it to your expenses.</p>
+        <p style="font-size: 12px; color: #666; margin: 10px 0;">The app cannot read your phone's SMS inbox. Copy and paste an alert into the SMS Parser below, or use the test button to try an example.</p>
+        <button id="testSmsBtn" class="btn" style="background: #3498db;">🧪 Test SMS Parser</button>
+        <div id="autoSmsStatus" style="margin-top: 10px; padding: 10px; background: #ecf0f1; border-radius: 8px; font-size: 12px; color: #2c3e50;"></div>
+      </div>
+
+      <div class="feature-box">
+        <h3>Set Budget Limit</h3>
+        <input type="number" id="budgetLimitInput" min="0" step="0.01" placeholder="Enter budget limit">
+        <button id="saveLimitBtn" class="btn">Save Limit</button>
+      </div>
+
+      <div class="feature-box">
+        <h3>Add Category Budget Limit</h3>
+        <input type="text" id="categoryNameInput" placeholder="Enter category name (e.g. Food)">
+        <input type="number" id="categoryLimitInput" min="0" step="0.01" placeholder="Enter budget limit">
+        <button id="saveCategoryLimitBtn" class="btn">Save Category Limit</button>
+      </div>
+      <div class="feature-box">
+        <h3>Saved Category Limits</h3>
+        <ul id="categoryLimitsList"></ul>
+      </div>
+
+      <div class="feature-box">
+        <h3>Currency Converter</h3>
+        <p class="settings-help">Rates are built-in estimates and may not match current market rates.</p>
+        <input type="number" id="convertAmountInput" min="0" step="0.01" placeholder="Enter amount">
+        <select id="fromCurrency"><option>USD</option><option>GBP</option><option>EUR</option><option>NGN</option></select>
+        <select id="toCurrency"><option>NGN</option><option>USD</option><option>GBP</option><option>EUR</option></select>
+        <input type="text" id="convertDescInput" placeholder="Description">
+        <button id="convertBtn" class="btn">Convert</button>
+        <div id="convertOutput"></div>
+      </div>
+
+      <div class="feature-box">
+        <h3>SMS Parser</h3>
+        <input type="text" id="smsInput" placeholder="Paste SMS alert text">
+        <button id="parseBtn" class="btn">Parse SMS</button>
+        <div id="smsOutput"></div>
+      </div>
+
+      <div class="feature-box">
+        <h3>Import Bank Statement (CSV)</h3>
+        <p class="settings-help">Review the import summary before adding entries. Quoted commas and common bank CSV headers are supported.</p>
+        <input type="file" id="bankFileInput" accept=".csv">
+        <p id="csvImportStatus" class="settings-help" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="feature-box">
+        <h3>☁️ Link Cloud Database</h3>
+        <input type="text" id="cloudUrlInput" placeholder="Paste Google Script URL">
+        <button id="saveCloudUrlBtn" class="btn">Save Cloud Link</button>
+      </div>
+
+      <div class="feature-box">
+        <h3>☁️ Cloud Sync Control</h3>
+        <p style="margin: 10px 0; font-size: 12px; color: #666;">Sync your expenses with cloud storage</p>
+        <button id="syncToCloudBtn" class="btn" style="background: #3498db;">📤 Sync to Cloud</button>
+        <button id="loadFromCloudBtn" class="btn" style="background: #9b59b6; margin-top: 10px;">📥 Load from Cloud</button>
+      </div>
+
+      <div class="feature-box">
+        <h3>Expense History</h3>
+        <div class="table-wrap"><table id="expenseTableBody"></table></div>
+        <button id="exportExpensesBtn" class="btn btn-secondary" type="button">Export backup as CSV</button>
+        <button id="clearHistoryBtn" class="btn">Clear History</button>
+      </div>
+    </div>
+
+    <!-- Chart Page -->
+<div id="chartPage" class="hidden">
+  <h2 class="page-title">Explore your activity</h2>
+  <div class="chart-toolbar">
+    <div><label for="chartView">View</label><select id="chartView"><option value="period">Spending over time</option><option value="category">By category</option><option value="item">By item</option></select></div>
+    <div><label for="chartGrouping">Group by</label><select id="chartGrouping"><option value="day">Daily</option><option value="week">Weekly</option><option value="month">Monthly</option></select></div>
+    <div><label for="chartStartDate">From</label><input type="date" id="chartStartDate"></div>
+    <div><label for="chartEndDate">To</label><input type="date" id="chartEndDate"></div>
+  </div>
+  <p id="chartSummary" class="settings-help" aria-live="polite"></p>
+  <div class="chart-surface">
+    <canvas id="expenseChart"></canvas>
+  </div>
+  <section class="chart-details">
+    <h3>Expense history in this date range</h3>
+    <div class="table-wrap"><table id="chartExpenseTable"></table></div>
+  </section>
+</div>
+
+<div id="accountPage" class="hidden">
+  <h2 class="page-title">Profile and security</h2>
+  <section class="feature-box settings-section">
+    <h3>Profile and location</h3>
+    <p class="settings-help">Your location sets the currency used to enter and display amounts. Saved records stay in the app's original NGN storage format and are converted for display.</p>
+    <div class="form-grid">
+      <div><label for="settingsUsername">Display name</label><input type="text" id="settingsUsername" maxlength="60" autocomplete="name"></div>
+      <div><label for="settingsCountry">Country or region</label><select id="settingsCountry"></select></div>
+    </div>
+    <p id="settingsCurrencyLabel" class="settings-help"></p>
+    <button id="saveProfileBtn" class="btn" type="button">Save profile</button>
+  </section>
+  <section class="feature-box settings-section">
+    <h3>Change password</h3>
+    <p class="settings-help">Your password is managed by your secure account provider. It is never saved as plain text by SpendGuard.</p>
+    <div class="form-grid">
+      <div><label for="currentPassword">Current password</label><input type="password" id="currentPassword" autocomplete="current-password"></div>
+      <div><label for="newPassword">New password</label><input type="password" id="newPassword" minlength="8" autocomplete="new-password"></div>
+    </div>
+    <button id="changePasswordBtn" class="btn btn-secondary" type="button">Update password</button>
+    <p id="passwordStatus" class="settings-help" role="status" aria-live="polite"></p>
+  </section>
+  <section class="feature-box settings-section">
+    <h3>Automatic lock</h3>
+    <p class="settings-help">Lock the dashboard after inactivity and unlock with your account password. This screen lock does not encrypt browser data.</p>
+    <div class="inline-control"><input type="checkbox" id="autoLockEnabled"><label for="autoLockEnabled">Enable inactivity lock</label></div>
+    <div><label for="autoLockMinutes">Lock after</label><select id="autoLockMinutes"><option value="1">1 minute</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option></select></div>
+    <button id="saveLockSettingsBtn" class="btn btn-secondary" type="button">Save lock settings</button>
+  </section>
+</div>
+
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+  <div id="lockOverlay" class="lock-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+    <form id="unlockForm" class="lock-panel">
+      <span class="brand-mark">S</span>
+      <h2 id="lockTitle">SpendGuard is locked</h2>
+      <p>Enter your account password to continue.</p>
+      <label for="unlockPassword">Account password</label>
+      <input type="password" id="unlockPassword" autocomplete="current-password" required>
+      <button class="btn" type="submit">Unlock</button>
+      <p id="unlockError" class="lock-error" role="status" aria-live="polite"></p>
+      <button id="unlockLogoutBtn" class="icon-btn" type="button">Sign out</button>
+    </form>
+  </div>
+      </div>
+    </main>
+  </div>
+
+  <button id="spendyChatToggle" class="spendy-fab" type="button" aria-label="Open Spendy chat" aria-expanded="false" aria-controls="spendyChatPanel" title="Tap or long-press to chat with Spendy"><span aria-hidden="true">S</span></button>
+  <section id="spendyChatPanel" class="spendy-chat-panel hidden" role="dialog" aria-modal="false" aria-labelledby="spendyChatTitle" aria-hidden="true">
+    <header class="spendy-chat-header">
+      <div><h2 id="spendyChatTitle">Spendy</h2><p>Your spending companion</p></div>
+      <button id="spendyChatClose" class="spendy-chat-close" type="button" aria-label="Close Spendy chat">×</button>
+    </header>
+    <div id="spendyChatMessages" class="spendy-chat-messages" role="log" aria-live="polite" aria-relevant="additions">
+      <div class="spendy-chat-message assistant">Hi, I'm Spendy, nice to meet you! Ask for a spending report or enter an expense like “Food 200 dollars.”</div>
+    </div>
+    <form id="spendyChatForm" class="spendy-chat-form">
+      <input id="spendyChatInput" type="text" autocomplete="off" aria-label="Message Spendy" placeholder="Ask or log an expense">
+      <button id="spendyChatMic" type="button" aria-label="Speak to Spendy" title="Speak to Spendy">🎙</button>
+      <button type="submit" aria-label="Send message to Spendy" title="Send">➤</button>
+    </form>
+    <p class="spendy-chat-note">Local spending helper. Voice input may be processed by your browser.</p>
+  </section>
+
+  <!-- Link to JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="currency-data.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

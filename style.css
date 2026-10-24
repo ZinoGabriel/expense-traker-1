@@ -1,0 +1,398 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Authentication Box Styling */
+.form-container {
+    background-color: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+}
+
+h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #7f8c8d;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    color: #34495e;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #fcfcfc;
+}
+
+input:focus, textarea:focus {
+    border-color: #2ecc71;
+    outline: none;
+    background-color: #fff;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #27ae60;
+}
+
+.footer-text {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+a {
+    color: #2ecc71;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Dashboard Specific Layout Styles */
+.dashboard-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 650px;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.balance-card {
+    background-color: #2c3e50;
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.balance-card p {
+    font-size: 36px;
+    font-weight: bold;
+    color: #2ecc71;
+    margin-top: 5px;
+}
+
+.feature-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.border-dash {
+    border: 2px dashed #2ecc71;
+}
+
+.instructions {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-bottom: 12px;
+}
+
+textarea {
+    height: 75px;
+    resize: none;
+    margin-bottom: 12px;
+}
+
+.output-message {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Data Table Presentation */
+.history-box h3 {
+    margin-bottom: 12px;
+    color: #2c3e50;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f7fafc;
+    color: #4a5568;
+    font-weight: 600;
+}
+body {
+    /* Set your Unsplash image as the background */
+    background-image: url("plufow-le-studio-loq_SHCuEyg-unsplash.jpg");
+    
+    /* Make the image stretch to cover the entire laptop screen */
+    background-size: cover;
+    
+    /* Center the background image perfectly */
+    background-position: center;
+    
+    /* Stop the image from repeating like a tile grid pattern */
+    background-repeat: no-repeat;
+    
+    /* Keep the background fixed in place if you scroll down */
+    background-attachment: fixed;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+
+}
+.dashboard-container {
+    /* This makes the white box slightly transparent so the background peeks through */
+    background-color: rgba(255, 255, 255, 0.92); 
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 650px;
+}
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px; 
+    }
+
+    .dashboard-container {
+        padding: 15px; 
+    }
+
+    .dash-header {
+        flex-direction: column; 
+        gap: 10px;
+        align-items: stretch; /* Stacks components cleanly on mobile */
+    }
+
+    /* ONLY make it wide when screen is smaller than a phone */
+    .logout-btn {
+        width: 100%; 
+        text-align: center;
+    }
+
+    .balance-card p {
+        font-size: 28px; 
+    }
+}
+
+/* 💻 LAPTOP/DESKTOP FIX (Add this right below to keep it neat on big screens) */
+@media screen and (min-width: 481px) {
+    .logout-btn {
+        width: auto; /* Keeps the button small and sized to its text on laptops */
+        padding: 8px 16px;
+    }
+}
+
+/* SpendGuard authentication polish */
+body {
+    position: relative;
+    isolation: isolate;
+    padding: 24px;
+    color: #20322f;
+    font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+
+body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(16, 46, 42, .32), rgba(21, 76, 67, .10)), url("plufow-le-studio-loq_SHCuEyg-unsplash.jpg") center / cover no-repeat;
+    content: "";
+}
+
+.form-container {
+    max-width: 440px;
+    padding: 38px 36px 30px;
+    border: 1px solid rgba(255, 255, 255, .72);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 26px 70px rgba(20, 49, 43, .22);
+    animation: auth-enter 340ms ease-out both;
+}
+
+.form-container h2 {
+    margin-bottom: 8px;
+    color: #18332f;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.form-container .subtitle {
+    color: #657671;
+    line-height: 1.5;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    margin-bottom: 7px;
+    color: #344b46;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-container input,
+.form-container select {
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid #d4dfda;
+    border-radius: 8px;
+    background: #f8faf9;
+    color: #1d302c;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.form-container input:hover,
+.form-container select:hover {
+    border-color: #9ab8ad;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    border-color: #138a72;
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(19, 138, 114, .16);
+}
+
+.form-container .btn {
+    min-height: 46px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    background: #138a72;
+    font-size: 14px;
+    font-weight: 750;
+    transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.form-container .btn:hover:not(:disabled) {
+    background: #0b6655;
+    box-shadow: 0 6px 16px rgba(11, 102, 85, .2);
+    transform: translateY(-1px);
+}
+
+.form-container .btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.form-container .btn:disabled {
+    cursor: wait;
+    opacity: .68;
+}
+
+.form-container .btn:focus-visible,
+.form-container a:focus-visible {
+    outline: 3px solid rgba(19, 138, 114, .35);
+    outline-offset: 3px;
+}
+
+.form-container #authMessage {
+    min-height: 18px;
+    margin: 10px 0 0;
+    color: #9a4a2f;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.form-container .footer-text {
+    margin-top: 20px;
+    color: #62736e;
+    font-size: 13px;
+}
+
+.form-container a {
+    color: #08745f;
+}
+
+@keyframes auth-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    body { padding: 16px; }
+    .form-container { padding: 30px 24px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-container { animation: none; }
+    .form-container .btn,
+    .form-container input,
+    .form-container select { transition: none; }
+}

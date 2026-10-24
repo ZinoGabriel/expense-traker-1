@@ -1,0 +1,212 @@
+/* -------------------------------------------------------------
+   🏆 POCKETGUARD PREMIUM DESIGN SYSTEM
+   ------------------------------------------------------------- */
+
+/* -------------------------------------------------------------
+   🏆 POCKETGUARD PREMIUM DESIGN SYSTEM
+   ------------------------------------------------------------- */
+
+/* -------------------------------------------------------------
+   🏆 POCKETGUARD PREMIUM DESIGN SYSTEM
+   ------------------------------------------------------------- */
+
+html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 1. Dynamic Design Color Variable Tokens */
+:root {
+    /* ✨ Deep Cinematic Cyber Dark Palette (Baseline) */
+    --bg-color: #050811;
+    --text-color: #f1f5f9;
+    --text-muted: #94a3b8;
+    --nav-hover: #a55eea; 
+    --accent-glow: linear-gradient(135deg, #a55eea 0%, #2ecc71 100%);
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --glass-blur: blur(20px);
+    --shadow-preset: 0 20px 40px rgba(0, 0, 0, 0.5);
+    --btn-text: #ffffff;
+}
+
+[data-theme="light"] {
+    /* ✨ UPGRADED: High-End Porcelain Light Palette */
+    --bg-color: #f4f6fa;          /* Soft slate-tinted white (easier on the eyes) */
+    --text-color: #0f172a;        /* Deep midnight navy instead of raw harsh black */
+    --text-muted: #64748b;        /* Cool steel gray for description links */
+    --nav-hover: #6c5ce7;         /* Premium cobalt purple accent */
+    
+    /* Luxury warm gradient mix for buttons & slide underlines */
+    --accent-glow: linear-gradient(135deg, #6c5ce7 0%, #00b894 100%); 
+    
+    --card-bg: rgba(255, 255, 255, 0.75); /* Clean clear frosted-glass look */
+    --border-color: rgba(15, 23, 42, 0.08); /* Soft crisp lines around cards */
+    --glass-blur: blur(24px);              /* Enhanced backdrop diffusion */
+    
+    /* 3D soft elevation shadows used by top tech startups */
+    --shadow-preset: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    --btn-text: #ffffff;
+}
+
+/* 2. Core Baseline Configurations */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+/* 3. Sleek Floating Apple-Style Navbar */
+header.hero {
+    position: fixed;
+    inset: 15px 20px auto 20px; 
+    z-index: 100;
+    padding: 14px 28px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-preset);
+    transition: all 0.3s ease;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+nav ul {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 4. Hyper-Responsive Link Mechanics */
+nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.2px;
+    position: relative;
+    padding: 4px 0;
+    transition: color 0.25s ease;
+}
+
+/* Luxury Animated Underline effect */
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-glow);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav a:hover {
+    color: var(--text-color);
+}
+
+nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Special styling for the active Sign Up CTA anchor link button */
+nav li:nth-last-child(2) a {
+    background: var(--accent-glow);
+    color: var(--btn-text) !important;
+    padding: 8px 18px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.25);
+    transition: all 0.25s ease;
+}
+
+nav li:nth-last-child(2) a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+}
+
+nav li:nth-last-child(2) a::after {
+    display: none; 
+}
+
+/* Accessible outline ring focus states */
+nav a:focus-visible, .theme-toggle-btn:focus-visible {
+    outline: 2px solid var(--nav-hover);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+/* 5. Luxury Micro-Animated Theme Mode Button */
+.theme-toggle-btn {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-preset);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(1px);
+}
+
+/* 📱 6. FULLY RESPONSIVE MOBILE MEDIA QUERY SETUP */
+@media screen and (max-width: 768px) {
+    header.hero {
+        inset: 10px 10px auto 10px;
+        padding: 12px 16px;
+        border-radius: 12px;
+    }
+
+    nav ul {
+        gap: 16px;
+        flex-wrap: wrap; 
+    }
+
+    nav a {
+        font-size: 13px;
+    }
+
+    nav li:nth-last-child(2) a {
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+    .theme-toggle-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}

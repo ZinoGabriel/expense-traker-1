@@ -1,0 +1,22 @@
+{
+  "short_name": "SpendGuard",
+  "name": "SpendGuard Automated Tracker",
+  "icons": [
+    {
+      "src": "digital-transaction.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },{
+      "src": "plufow-le-studio-loq_SHCuEyg-unsplash.jpg ",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/dashboard.html",
+  "background_image": "plufow-le-studio-loq_SHCuEyg-unsplash.jpg",
+  "theme_color": "#2c3e50",
+  "display": "standalone",
+  "orientation": "portrait"
+}
