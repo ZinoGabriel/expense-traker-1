@@ -14,7 +14,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/dashboard.html",
+  "start_url": "./dashboard.html",
   "scope": "./",
   "background_image": "plufow-le-studio-loq_SHCuEyg-unsplash.jpg",
   "theme_color": "#2c3e50",
