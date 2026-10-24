@@ -565,6 +565,44 @@ window.onload = async function () {
         return { text: `${summary}${categorySummary} ${advice}`, monthTotal, monthExpenses, advice };
     }
 
+    function getAiSummaryData() {
+        const report = getSpendingReport();
+        const categoryTotals = {};
+        report.monthExpenses.forEach(expense => {
+            const category = expense.category || 'Other';
+            categoryTotals[category] = (categoryTotals[category] || 0) + (Number(expense.amount) || 0);
+        });
+
+        return {
+            currency: currentCurrency,
+            period: new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(new Date()),
+            total: report.monthTotal / ratesToNaira[currentCurrency],
+            budget: (Number(localStorage.getItem('myBudgetLimit')) || 0) / ratesToNaira[currentCurrency],
+            count: report.monthExpenses.length,
+            categories: Object.entries(categoryTotals)
+                .sort((left, right) => right[1] - left[1])
+                .slice(0, 12)
+                .map(([name, amount]) => ({ name, amount: amount / ratesToNaira[currentCurrency] }))
+        };
+    }
+
+    async function requestAiAdvice(question) {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error || !data.session?.access_token) throw new Error('Please sign in again before asking Spendy for AI advice.');
+
+        const response = await fetch('/.netlify/functions/spendy-advice', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${data.session.access_token}`
+            },
+            body: JSON.stringify({ question, summary: getAiSummaryData() })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Spendy AI is unavailable right now.');
+        return result.advice;
+    }
+
     function updateSpendyReport() {
         const response = document.querySelector('#spendyResponse');
         if (response) response.textContent = getSpendingReport().text;
@@ -1192,6 +1230,24 @@ window.onload = async function () {
     document.querySelector('#spendyReportBtn').addEventListener('click', () => {
         handleSpendyCommand('show spending report');
     });
+
+    async function requestInlineAiAdvice(button, question) {
+        const response = document.querySelector('#spendyResponse');
+        button.disabled = true;
+        response.textContent = 'Spendy is reviewing your monthly totals…';
+        try {
+            response.textContent = await requestAiAdvice(question);
+        } catch (error) {
+            response.textContent = error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    document.querySelector('#spendyAiBtn').addEventListener('click', async function () {
+        const question = document.querySelector('#spendyCommand').value.trim() || 'Review my monthly spending and suggest one practical way to stay within my budget.';
+        await requestInlineAiAdvice(this, question);
+    });
     document.querySelector('#spendyGreetingBtn').addEventListener('click', function () {
         const greeting = "Hi, I'm Spendy, nice to meet you!";
         spendyResponse.textContent = greeting;
@@ -1270,6 +1326,31 @@ window.onload = async function () {
         addSpendyChatMessage(document.querySelector('#spendyResponse').textContent, 'assistant');
     }
 
+    async function askAiFromChat() {
+        const question = spendyChatInput.value.trim() || 'Review my monthly spending and give one practical budget suggestion.';
+        addSpendyChatMessage(question, 'user');
+        spendyChatInput.value = '';
+        const pendingMessage = document.createElement('div');
+        pendingMessage.className = 'spendy-chat-message assistant';
+        pendingMessage.textContent = 'Spendy is reviewing your totals…';
+        spendyChatMessages.appendChild(pendingMessage);
+        spendyChatMessages.scrollTop = spendyChatMessages.scrollHeight;
+
+        const aiButton = document.querySelector('#spendyChatAi');
+        aiButton.disabled = true;
+        try {
+            pendingMessage.textContent = await requestAiAdvice(question);
+        } catch (error) {
+            pendingMessage.textContent = error.message;
+            if (!spendyChatPanel.classList.contains('hidden')) {
+                document.querySelector('#spendyResponse').textContent = error.message;
+            }
+        } finally {
+            aiButton.disabled = false;
+            spendyChatMessages.scrollTop = spendyChatMessages.scrollHeight;
+        }
+    }
+
     spendyChatToggle.addEventListener('click', function () {
         if (longPressOpenedChat) {
             longPressOpenedChat = false;
@@ -1292,6 +1373,7 @@ window.onload = async function () {
         event.preventDefault();
         sendSpendyChatMessage(spendyChatInput.value);
     });
+    document.querySelector('#spendyChatAi').addEventListener('click', askAiFromChat);
     document.querySelector('#spendyChatMic').addEventListener('click', function () {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {

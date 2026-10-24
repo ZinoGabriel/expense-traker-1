@@ -107,6 +107,8 @@
     .assistant-header h2 { margin: 0 0 6px; font-size: 19px; }
     .assistant-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .assistant-actions .icon-btn { min-height: 42px; }
+    .assistant-actions #spendyAiBtn { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .assistant-actions #spendyAiBtn:hover { background: var(--accent-dark); color: #fff; }
     .assistant-command { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: start; margin-top: 16px; }
     .assistant-command input { margin: 0; }
     .assistant-command .btn { width: auto; min-width: 115px; }
@@ -123,7 +125,7 @@
     .spendy-chat-message { max-width: 88%; padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
     .spendy-chat-message.assistant { align-self: flex-start; border: 1px solid var(--border-color); background: var(--bg-primary); }
     .spendy-chat-message.user { align-self: flex-end; background: var(--accent); color: #fff; }
-    .spendy-chat-form { display: grid; grid-template-columns: minmax(0, 1fr) 40px 40px; gap: 7px; padding: 10px 12px; border-top: 1px solid var(--border-color); }
+    .spendy-chat-form { display: grid; grid-template-columns: minmax(0, 1fr) 40px 40px 40px; gap: 7px; padding: 10px 12px; border-top: 1px solid var(--border-color); }
     .spendy-chat-form input { min-height: 40px; margin: 0; padding: 8px 10px; }
     .spendy-chat-form button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 7px; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; }
     .spendy-chat-note { margin: 0; padding: 0 12px 9px; color: var(--text-secondary); font-size: 10px; }
@@ -223,6 +225,7 @@
           <div class="assistant-actions">
             <button id="spendyGreetingBtn" class="icon-btn" type="button" title="Hear Spendy's greeting">▶ Hear greeting</button>
             <button id="spendyReportBtn" class="icon-btn" type="button" title="Summarize this month's spending">▤ Spending report</button>
+            <button id="spendyAiBtn" class="icon-btn" type="button" title="Get AI advice about your spending">✦ AI insight</button>
           </div>
         </div>
         <div class="assistant-command">
@@ -231,7 +234,7 @@
           <button id="spendyMicBtn" class="icon-btn" type="button" title="Speak an expense">🎙 Speak</button>
         </div>
         <p id="spendyResponse" class="assistant-response" role="status" aria-live="polite">Your monthly summary and spending tips will appear here.</p>
-        <p class="assistant-note">Spendy uses on-device rules, not a cloud AI model. Voice input needs browser speech recognition and microphone permission; transcription may be handled by your browser provider.</p>
+        <p class="assistant-note">Local summaries work without AI. AI insights send your question and monthly/category totals to Gemini; transaction descriptions are not sent. Voice input needs browser support and microphone permission.</p>
       </section>
 
       <div class="feature-box">
@@ -388,9 +391,10 @@
     <form id="spendyChatForm" class="spendy-chat-form">
       <input id="spendyChatInput" type="text" autocomplete="off" aria-label="Message Spendy" placeholder="Ask or log an expense">
       <button id="spendyChatMic" type="button" aria-label="Speak to Spendy" title="Speak to Spendy">🎙</button>
+      <button id="spendyChatAi" type="button" aria-label="Ask Gemini for advice" title="Ask Gemini for advice">✦</button>
       <button type="submit" aria-label="Send message to Spendy" title="Send">➤</button>
     </form>
-    <p class="spendy-chat-note">Local spending helper. Voice input may be processed by your browser.</p>
+    <p class="spendy-chat-note">AI requests send your question and monthly/category totals to Gemini, not transaction descriptions. Local advice still works without AI.</p>
   </section>
 
   <!-- Link to JS -->
