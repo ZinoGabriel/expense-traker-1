@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendGuard - Smart Automated Expense Tracker</title>
+    <!-- 📊 This replaces the default world icon with a premium shield-finance logo icon -->
+
+
+    <!-- Link to your shared premium style file -->
+    <link rel="stylesheet" href="styletwo.css">
+    <link rel="icon" type="image/png" href="service.png">
+    
+    <!-- Inline page layout overrides to keep index clean -->
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* --- Premium Hero & Grid Typography Formatting Layouts --- */
+        .hero-section {
+            max-width: 1200px;
+            margin: 160px auto 80px auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .gradient-text {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: 0;
+            margin-bottom: 20px;
+            background: var(--accent-glow);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 35px auto;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        /* --- Feature Highlights Columns Grid --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+            padding: 0 24px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            border-radius: 16px;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-preset);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+             cursor: pointer;
+
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--nav-hover);
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin: 0 0 12px 0;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .icon-box {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        /* --- Responsive Squish Adaptations --- */
+        @media screen and (max-width: 768px) {
+            .hero-section { margin-top: 120px; }
+            .gradient-text { font-size: 36px; }
+            .hero-subtitle { font-size: 15px; }
+            .cta-container { flex-direction: column; width: 100%; }
+            .btn-secondary { width: 100%; text-align: center; }
+        }
+      /* -------------------------------------------------------------
+   🔒 PREMIUM MASTER FOOTER DESIGN SYSTEM
+   ------------------------------------------------------------- */
+.app-footer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 60px auto 20px auto;
+    padding: 24px;
+    text-align: center;
+    border-top: 1px solid var(--border-color); /* Elegant thin dividing line */
+    transition: all 0.3s ease;
+}
+
+.app-footer p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 4px 0;
+    font-weight: 500;
+}
+
+.app-footer .credits {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Make your signature tag glow with your luxury theme colors! */
+.author-tag {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: var(--accent-glow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+  
+    </style>
+</head>
+<body>
+
+    <!-- 🌐 Floating Apple-Style Navbar Area -->
+    <header class="hero">
+        <nav>
+            <ul>
+                <li style="margin-right: auto; font-weight: 800; font-size: 18px; color: var(--text-color)">SpendGuard ₦</li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+                <li><button id="themeToggleBtn" class="theme-toggle-btn">☀️ Light Mode</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 🚀 Main Center Stage Hero Intro Block -->
+    <section class="hero-section">
+        <h1 class="gradient-text">Take Control of Your Money.<br>One Expense at a Time.</h1>
+        <p class="hero-subtitle">
+            Track expenses, review detailed spending reports, set budgets, import and back up statements, and sync your account across devices.
+        </p>
+        
+        <div class="cta-container">
+            <!-- Simulated Sign up anchor trigger link -->
+            <a href="signup.html " class="btn-secondary" style="background: var(--accent-glow); color: #fff !important; border: none; padding: 14px 28px;">Get Started — It's Free</a>
+            <a href="#features" class="btn-secondary">See How It Works ↓</a>
+        </div>
+    </section>
+
+    <!-- ⚡ Smart Feature Highlights Showcase Grid -->
+    <section id="features" class="features-grid">
+        
+        <div class="feature-card">
+            <div class="icon-box">⚡</div>
+            <h3>Manual SMS Parser</h3>
+            <p>Copy and paste a bank alert into the SMS Parser. The app extracts the amount and helps you add it as an expense. It cannot read your phone's SMS inbox.</p>
+        </div>
+
+        <div class="feature-box feature-card" style="margin: 0; background: var(--card-bg);">
+            <div class="icon-box">📂</div>
+            <h3>CSV Import and Backup</h3>
+            <p>Import common bank CSV formats, including quoted descriptions with commas. Review the import summary, skip duplicates, and export your expense history as a backup.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">💱</div>
+            <h3>Location-Based Currency</h3>
+            <p>Choose a supported country at sign-up to set your display currency. Convert amounts between supported currencies using built-in estimated rates.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">🎯</div>
+            <h3>Budgets That Travel</h3>
+            <p>Set overall and category spending limits. Your budgets and expense history sync to your account so they’re available when you sign in on another device.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">📊</div>
+            <h3>Detailed Spending Insights</h3>
+            <p>Filter expenses by date and inspect each transaction. Compare daily, weekly, or monthly totals, or view spending by category or item.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">💬</div>
+            <h3>Spendy Assistant with Gemini AI</h3>
+            <p>Use local summaries and expense logging, or request optional Gemini AI advice from your monthly totals and category aggregates. Voice depends on browser support.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">☁️</div>
+            <h3>Supabase Cloud Database</h3>
+            <p>Supabase Auth and a protected Supabase database store each account's expenses and budget settings, so they can sync across devices. The app owner must configure Supabase before cloud sync works.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">🔒</div>
+            <h3>Private Account Data</h3>
+            <p>Passwords are handled by Supabase Auth, and expense rows are protected by per-user database policies. Use a trusted deployment and do not enter bank login details.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="icon-box">📱</div>
+            <h3>Installable Web App</h3>
+            <p>Install the Progressive Web App from a supported browser using its Add to Home Screen option.</p>
+        </div>
+        <!-- 🔒 PREMIUM COPYRIGHT FOOTER -->
+<footer class="app-footer">
+    <p>© 2026 SpendGuard. All rights reserved.</p>
+    <p class="credits">Crafted with passion by <span class="author-tag">ZT</span></p>
+</footer>
+
+
+    </section>
+
+    <!-- 🧠 Script Logic Connecting Mode Switch Functionality -->
+    <script>
+        const themeToggleBtn = document.querySelector('#themeToggleBtn');
+
+        // Load theme choices from browser cache parameters (Defaults to Dark Theme)
+        const savedTheme = localStorage.getItem('websiteTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateButtonLook(savedTheme);
+
+        themeToggleBtn.addEventListener('click', function() {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let targetTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('websiteTheme', targetTheme);
+            updateButtonLook(targetTheme);
+        });
+
+        function updateButtonLook(activeTheme) {
+            if (activeTheme === 'light') {
+                themeToggleBtn.innerText = "🌙 Dark Mode";
+            } else {
+                themeToggleBtn.innerText = "☀️ Light Mode";
+            }
+        }
+    </script>
+</body>
+</html>
