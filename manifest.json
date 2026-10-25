@@ -14,8 +14,9 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "./dashboard.html",
-  "scope": "./",
+  "id": "/expense-traker-1/",
+  "start_url": "/expense-traker-1/dashboard.html",
+  "scope": "/expense-traker-1/",
   "background_image": "plufow-le-studio-loq_SHCuEyg-unsplash.jpg",
   "theme_color": "#2c3e50",
   "display": "standalone",
