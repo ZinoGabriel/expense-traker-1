@@ -4,10 +4,10 @@ The app uses Supabase Auth for accounts and stores each account's expense histor
 
 1. Create a Supabase project.
 2. In the Supabase SQL Editor, run `supabase-setup.sql`.
-3. In Supabase Authentication settings, set the site URL to your deployed Netlify URL and add that URL and its `/login.html` path to the allowed redirect URLs.
+3. In Supabase Authentication settings, set the site URL to your app URL and add that URL and its `/login.html` path to the allowed redirect URLs. For GitHub Pages, use `https://zinogabriel.github.io`.
 4. Copy the project URL and public anon/publishable key from Project Settings > API into `supabase-config.js`.
 5. Keep `currency-data.js` with the rest of the project; signup and account settings use it to map supported locations to display currencies.
-6. Deploy the project to Netlify. Never put a `service_role` key in frontend code or public site files.
+6. Deploy the app to your chosen host. If you use GitHub Pages, deploy the static app there and deploy a separate Netlify site from this repository for serverless functions. Never put a `service_role` key in frontend code or public site files.
 7. Create an account and confirm its email if confirmation is enabled. New expenses sync automatically; signing into the same account on another device loads the same history.
 
 The username, country, and currency are stored as Supabase Auth user metadata. Passwords are managed by Supabase Auth and are not saved by this app in local storage. The first time an account is opened in a browser that already has local expenses, the app asks whether to upload those expenses. Currency conversion uses built-in estimates in `currency-data.js`, not live market rates; expense amounts remain stored in NGN and are converted for display.
@@ -21,9 +21,10 @@ The dashboard's Spendy helper provides local summaries and rules-based tips. Opt
 The dashboard includes an opt-in Gemini advice button. The Gemini key stays in a Netlify Function and must never be added to browser JavaScript or `supabase-config.js`.
 
 1. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/api-keys).
-2. In Netlify, add `GEMINI_API_KEY`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY` under the site's environment-variable settings. Optionally set `GEMINI_MODEL`; the function defaults to `gemini-3.8-flash`.
-3. Deploy the project with Netlify Functions enabled. Deploy from a connected Git repository or using Netlify CLI; a static drag-and-drop deploy or Live Server does not run the function.
-4. Sign in and choose **AI insight** in Spendy. During local development, run the site with Netlify CLI (`npx netlify dev`) and provide the same secrets through your local environment.
+2. Create a Netlify site from this repository to host the function. In that site's environment-variable settings, add `GEMINI_API_KEY`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY`. Optionally set `GEMINI_MODEL`; the function defaults to `gemini-3.8-flash`.
+3. After Netlify deploys, copy its site URL and set `window.SPENDGUARD_AI_ENDPOINT` in `supabase-config.js` to `https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/spendy-advice`. The URL is public configuration, not a secret; never put the Gemini key in this file.
+4. Deploy the updated `supabase-config.js` and app files to GitHub Pages. The function allows browser requests from `https://zinogabriel.github.io`; update the allowlist in `netlify/functions/spendy-advice.mjs` if your GitHub Pages username or custom domain changes.
+5. Sign in and choose **AI insight** in Spendy. During local development, run the site with Netlify CLI (`npx netlify dev`) and provide the same secrets through your local environment.
 
 Each AI request first verifies the signed-in Supabase session, then sends the user's question plus the current month's aggregate total, budget, currency, count, and category totals. It does not send transaction descriptions, emails, or individual line items. The Gemini request sets `store: false`, but Google still processes the request. API quotas and charges depend on the Google AI Studio project and can change; configure usage limits and never commit the Gemini key.
 

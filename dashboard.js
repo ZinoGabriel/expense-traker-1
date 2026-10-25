@@ -590,7 +590,27 @@ window.onload = async function () {
         const { data, error } = await supabaseClient.auth.getSession();
         if (error || !data.session?.access_token) throw new Error('Please sign in again before asking Spendy for AI advice.');
 
-        const response = await fetch('/.netlify/functions/spendy-advice', {
+        const configuredEndpoint = window.SPENDGUARD_AI_ENDPOINT?.trim();
+        if (!configuredEndpoint) {
+            throw new Error('Spendy AI is not connected yet. Set SPENDGUARD_AI_ENDPOINT in supabase-config.js to your Netlify function URL.');
+        }
+
+        let endpoint;
+        try {
+            endpoint = new URL(configuredEndpoint);
+        } catch {
+            throw new Error('Spendy AI has an invalid function URL. Check SPENDGUARD_AI_ENDPOINT in supabase-config.js.');
+        }
+        if (
+            endpoint.protocol !== 'https:' ||
+            !endpoint.pathname.endsWith('/.netlify/functions/spendy-advice') ||
+            endpoint.username ||
+            endpoint.password
+        ) {
+            throw new Error('Spendy AI needs a secure Netlify function URL ending in /.netlify/functions/spendy-advice.');
+        }
+
+        const response = await fetch(endpoint.href, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

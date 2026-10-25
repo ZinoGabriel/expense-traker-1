@@ -1,6 +1,23 @@
-const jsonResponse = (body, status = 200) => Response.json(body, {
+const ALLOWED_ORIGINS = new Set([
+    'https://zinogabriel.github.io',
+    'http://localhost:8888',
+    'http://127.0.0.1:8888'
+]);
+
+function responseHeaders(origin) {
+    const headers = {
+        'Cache-Control': 'no-store',
+        'Vary': 'Origin'
+    };
+    if (ALLOWED_ORIGINS.has(origin)) {
+        headers['Access-Control-Allow-Origin'] = origin;
+    }
+    return headers;
+}
+
+const jsonResponse = (body, status = 200, origin = '') => Response.json(body, {
     status,
-    headers: { 'Cache-Control': 'no-store' }
+    headers: responseHeaders(origin)
 });
 
 function sanitizeSummary(value) {
@@ -29,22 +46,36 @@ function sanitizeSummary(value) {
 }
 
 export default async function spendyAdvice(request) {
-    if (request.method !== 'POST') return jsonResponse({ error: 'Method not allowed.' }, 405);
+    const origin = request.headers.get('origin') || '';
+    if (request.method === 'OPTIONS') {
+        if (!ALLOWED_ORIGINS.has(origin)) return jsonResponse({ error: 'Origin not allowed.' }, 403);
+        return new Response(null, {
+            status: 204,
+            headers: {
+                ...responseHeaders(origin),
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+                'Access-Control-Max-Age': '86400'
+            }
+        });
+    }
+    if (origin && !ALLOWED_ORIGINS.has(origin)) return jsonResponse({ error: 'Origin not allowed.' }, 403, origin);
+    if (request.method !== 'POST') return jsonResponse({ error: 'Method not allowed.' }, 405, origin);
 
     const apiKey = process.env.GEMINI_API_KEY;
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-    if (!apiKey) return jsonResponse({ error: 'AI advice is not configured yet. Add GEMINI_API_KEY to the Netlify environment and redeploy.' }, 503);
+    if (!apiKey) return jsonResponse({ error: 'AI advice is not configured yet. Add GEMINI_API_KEY to the Netlify environment and redeploy.' }, 503, origin);
     if (!supabaseUrl || !supabaseAnonKey) {
-        return jsonResponse({ error: 'Supabase server verification is not configured in Netlify.' }, 503);
+        return jsonResponse({ error: 'Supabase server verification is not configured in Netlify.' }, 503, origin);
     }
 
     const authorization = request.headers.get('authorization') || '';
-    if (!authorization.startsWith('Bearer ')) return jsonResponse({ error: 'Please sign in to use AI advice.' }, 401);
+    if (!authorization.startsWith('Bearer ')) return jsonResponse({ error: 'Please sign in to use AI advice.' }, 401, origin);
 
     try {
         const supabaseBaseUrl = new URL(supabaseUrl);
-        if (supabaseBaseUrl.protocol !== 'https:') return jsonResponse({ error: 'Invalid Supabase configuration.' }, 500);
+        if (supabaseBaseUrl.protocol !== 'https:') return jsonResponse({ error: 'Invalid Supabase configuration.' }, 500, origin);
 
         const authResponse = await fetch(`${supabaseBaseUrl.origin}/auth/v1/user`, {
             headers: {
@@ -53,17 +84,17 @@ export default async function spendyAdvice(request) {
             },
             signal: AbortSignal.timeout(10000)
         });
-        if (!authResponse.ok) return jsonResponse({ error: 'Your session could not be verified. Please sign in again.' }, 401);
+        if (!authResponse.ok) return jsonResponse({ error: 'Your session could not be verified. Please sign in again.' }, 401, origin);
 
         const requestText = await request.text();
-        if (requestText.length > 4000) return jsonResponse({ error: 'That request is too large. Please shorten your question.' }, 413);
+        if (requestText.length > 4000) return jsonResponse({ error: 'That request is too large. Please shorten your question.' }, 413, origin);
         const payload = JSON.parse(requestText);
         const question = typeof payload.question === 'string' ? payload.question.trim().slice(0, 400) : '';
         const summary = sanitizeSummary(payload.summary);
-        if (!question || !summary) return jsonResponse({ error: 'A question and valid spending summary are required.' }, 400);
+        if (!question || !summary) return jsonResponse({ error: 'A question and valid spending summary are required.' }, 400, origin);
 
         const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-        if (!/^gemini-[a-z0-9.-]+$/i.test(model)) return jsonResponse({ error: 'Invalid Gemini model configuration.' }, 500);
+        if (!/^gemini-[a-z0-9.-]+$/i.test(model)) return jsonResponse({ error: 'Invalid Gemini model configuration.' }, 500, origin);
 
         const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
             method: 'POST',
@@ -87,7 +118,7 @@ export default async function spendyAdvice(request) {
 
         if (!geminiResponse.ok) {
             console.error('Gemini request failed with status:', geminiResponse.status);
-            return jsonResponse({ error: 'AI advice is temporarily unavailable. Try again shortly.' }, 502);
+            return jsonResponse({ error: 'AI advice is temporarily unavailable. Try again shortly.' }, 502, origin);
         }
 
         const result = await geminiResponse.json();
@@ -95,11 +126,11 @@ export default async function spendyAdvice(request) {
             ?.map(part => part.text || '')
             .join('')
             .trim();
-        if (!advice) return jsonResponse({ error: 'Spendy could not create advice for that request.' }, 502);
+        if (!advice) return jsonResponse({ error: 'Spendy could not create advice for that request.' }, 502, origin);
 
-        return jsonResponse({ advice: advice.slice(0, 2500) });
+        return jsonResponse({ advice: advice.slice(0, 2500) }, 200, origin);
     } catch (error) {
         console.error('Spendy AI function error:', error.message);
-        return jsonResponse({ error: 'AI advice is temporarily unavailable. Check the site configuration and try again.' }, 502);
+        return jsonResponse({ error: 'AI advice is temporarily unavailable. Check the site configuration and try again.' }, 502, origin);
     }
 }
