@@ -3,7 +3,7 @@
 // Calibration: August 2026 Core Build
 // ==========================================
 
-const CACHE_NAME = 'spendguard-cache-v74';
+const CACHE_NAME = 'spendguard-cache-v75';
 
 // The layout files that must be saved locally to run the app offline
 const ASSETS_TO_CACHE = [

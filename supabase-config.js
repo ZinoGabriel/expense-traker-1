@@ -3,7 +3,7 @@
 window.spendGuardSupabase = null;
 
 // Public Netlify function URL for Spendy AI. Keep all API keys in Netlify environment variables.
-window.SPENDGUARD_AI_ENDPOINT = '';
+window.SPENDGUARD_AI_ENDPOINT = 'https://sunny-malabi-eb9877.netlify.app/.netlify/functions/spendguard';
 
 const SUPABASE_URL = 'https://erctztcrxrfohykemxnu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyY3R6dGNyeHJmb2h5a2VteG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NDQ1OTAsImV4cCI6MjEwODQyMDU5MH0.WgP4kwKY-j1nUDBtfGirujiYrlp4ohnrkjXgoEWVsZI';
