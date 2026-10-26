@@ -77,3 +77,4 @@ I am still learning, and I would love feedback from developers, designers, and u
 If you find SpendGuard useful, please consider giving the repository a ⭐ and following my journey on GitHub.
 
 Made with curiosity and persistence by [@ZinoGabriel](https://github.com/zinogabriel)
+© 2026 ZinoGabriel. All rights reserved. This project may not be copied, redistributed, or used commercially without permission.
